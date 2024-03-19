@@ -1,0 +1,223 @@
+.admin-dashboard {
+  display: flex;
+  min-height: 100vh;
+  flex-grow: 1;
+}
+
+  
+  .sidebar {
+    width: 250px;
+    background-color: #333;
+    color: white;
+    padding: 20px;
+  }
+
+  .sidebar p {
+    padding-bottom: 10px; 
+    margin-bottom: 10px; 
+    border-bottom: 1px solid #cccccc5d; 
+    font-size: 15px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+  }
+  .admin{
+    margin-bottom: 80px;
+    text-align: center;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+
+  }
+  .main-content {
+    flex-grow: 1;
+    background-color: #f0f2f5;
+  }
+  .icon {
+    width: 25px;
+    height: 25px; 
+}
+.highlight {
+  color: #e44747; 
+  font-weight: bold; 
+}
+
+  .header {
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 22px;
+  }
+  
+  .summary-cards {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .highlight-background {
+    background-color: rgb(184, 197, 202); 
+    color: #000000; 
+    padding: 5px 10px; 
+    border-radius: 5px; 
+    
+}
+
+  .pending{
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.088);
+  }
+
+  .pending-sub{
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f4eeeee1;
+  }
+  
+  .card {
+    display: flex;
+    margin: 15px;
+    align-items: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .card-image {
+    margin-bottom: 5px;
+    width: 50px; 
+    height: 50px; 
+    margin-right: 20px;
+    border-radius: 50%; 
+    object-fit: cover; 
+    align-items: center;
+  }
+  
+  .card-content {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .card-title {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-left: 5px;
+  }
+  
+  .card-value {
+    font-size: 0.9rem;
+    color: #555;
+    margin-left: 5px;
+  }
+  
+  .project-list {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .project-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .project-item:last-child {
+    border-bottom: none;
+  }
+
+  .approve-button {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgb(11, 218, 81);
+    background-color: #0BDA51;
+  }
+
+  .decline-button{
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgb(210, 4, 45);
+    background-color: #D2042D;
+  }
+  .w3-bar {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: white;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 8px;
+  }
+  
+  .w3-bar-item.w3-button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 24px;
+  }
+  
+  .w3-bar-item.w3-circle {
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .w3-bar-item {
+    margin-left: 10px;
+  }
+  
+  .w3-large {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .w3-span-sub {
+    font-size: 12px;
+    color: #71797E	;
+  }
+
+  .admin-pic{
+    border-radius: 50%;
+    margin-right: 5;
+  }
+
+  .admin-container {
+    display: flex;
+    align-items: center; 
+    margin-bottom: 60px;
+  }
+ 
+  
+  .user-item {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-image {
+    width: 85px; 
+    height: 85px; 
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+  }
+  
+  .user-details {
+    flex-grow: 1; 
+  }
+  
+  .user-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .user-info {
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  
+  
+  .admin-text {
+    font-size: 1.2rem; 
+    font-weight: bold; 
+  }  
