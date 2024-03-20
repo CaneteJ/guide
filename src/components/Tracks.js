@@ -5,18 +5,75 @@ import {db} from "../config/firebase"
 import { collection, onSnapshot, Timestamp, where, getDocs, query} from 'firebase/firestore';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { FaUserCircle } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import {
+  MDBCol,
+  MDBContainer,
+  MDBRow,
+  MDBCard,
+  MDBCardText,
+  MDBCardBody,
+  MDBCardImage,
+  MDBListGroup,
+  MDBListGroupItem,
+} from 'mdb-react-ui-kit';
 import UserContext from '../UserContext';
 
+const listItemStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: "10px 15px",
+  transition: "background-color 0.3s ease",
+  cursor: "pointer",
+  backgroundColor: "#FFFFFF",
+  border:"none",
+  boxShadow:"none",
+
+};
+const customListItemStyle = {
+  border: 'none', // Remove border from list items
+  backgroundColor: "#FFFFFF",
+
+};
 const App = () => {
-  const { user } = useContext(UserContext);
+  const { user } = useContext(UserContext); // Initialize user first
+  const [profileImageUrl, setProfileImageUrl] = useState("");
+  const [managementName, setManagementName] = useState(user? user.managementName : ""); 
+  const [address, setAddress] = useState(user.companyAddress || ""); 
   const [showAccountingPage, setShowAccountingPage] = useState(false);
   const [showCustomer, setShowCustomer] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
   const [parkingLogs, setParkingLogs] = useState([]);
-  const [scheduleData, setScheduleData] = useState([]);
+  const [scheduleData, setScheduleData] = useState([]); 
   const [revenue, setRevenue] = useState([]);
   const [loading, setLoading] = useState(true);
+  const handleViewProfile = () => {
+    navigate("/Profiles");
+  };
+  const handlelogin = () => {
+    navigate("/")
+  };
+  const navigate = useNavigate();
+
+  const listItemHoverStyle = {
+    backgroundColor: "#003851",
+  };
+  const handleAgentSchedule = () => {
+    navigate("/AgentSchedule");
+  };
+
+  const handleRevenues = () => {
+    navigate("/Tracks");
+  };
+
+  const handleRegister = () => {
+    navigate("/AgentRegistration");
+  };
+
+  const handleFeed = () => {
+    navigate("/Feedback");
+  };
 
   const handleShowAccountingPage = () => {
     setShowAccountingPage(true);
@@ -123,18 +180,16 @@ const App = () => {
 
   return (
     <section style={{
-      backgroundImage: 'url("parkingbackground.jpg")',
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat',
       minHeight: '100vh',
-      backgroundColor: 'rgba(95, 158, 160, 0.5)', // Use an rgba color to include transparency
-      backdropFilter: 'blur(10px)', // Adjust the blur strength as needed
+      backgroundColor: 'white', 
     }}>
       
          <nav className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: "#003851" }}>
         <div className="container">
-          <Link className="navbar-brand" to="/Dashboard">
-            SpotWise Parking Management System
+        <Link className="navbar-brand" to="/Dashboard" style={{ fontSize: '25px'}}>
+            SpotWise 
           </Link>
           <p style={styles.welcomeMessage}>
           <DropdownButton 
@@ -183,31 +238,155 @@ const App = () => {
           </p>
         </div>
       </nav>
-      <Container className="mt-5"style={{ backgroundColor: "rgba(47, 79, 79, 0.9)" }}>
-        <h2 className="mb-4" style={{fontFamily:'Georgina', textAlign:'center', color:'white', fontWeight: 'bold'}}>Welcome to Management Details Page</h2>
+      <MDBContainer className="py-5" >
+  <MDBRow>
+    <MDBCol lg="4">
+      <MDBCard style={{ marginTop: '45px', color: '#fff'}}>
+        <MDBCardBody className="text-center">
+          <p style={{ fontFamily: "Georgina", fontSize: '25px', color: 'black', border:'white' , fontWeight: 'bold'}}>Administrator</p>
+          {profileImageUrl ? (
+            <MDBCardImage
+              src={profileImageUrl}
+              alt="Operator Profile Logo"
+              className="rounded-circle"
+              style={{ width: '70px' }}
+              fluid
+            />
+          ) : (
+            <MDBCardImage
+              src="default_placeholder.jpg"
+              alt="Default Profile Logo"
+              className="rounded-circle"
+              style={{ width: '70px' }}
+              fluid
+            />
+          )}
+          <p className="text-muted mb-1" style={{ fontFamily: 'Georgina', marginTop: '15px', color: 'black', fontWeight: 'bold'}}>
+            {managementName}
+          </p>
+          <p className="text-muted mb-4" style={{ fontFamily: 'Georgina', fontWeight: 'bold'}}>
+            {address}
+          </p>
+        </MDBCardBody>
+
+            <MDBCard className="mb-4 mb-lg-0" style={{ marginTop: '40px', boxShadow: 'none', border:'none'}}>
+              <MDBCardBody className="p-0">
+              <MDBListGroup
+      flush
+      className="rounded-3"
+      style={{
+        border: 'none',
+        borderRadius: 'none',
+        boxShadow: 'none', 
+      }}
+    >
+                  <MDBListGroupItem style={{ ...listItemStyle, ...customListItemStyle}}
+                    hover
+                    className="d-flex justify-content-between align-items-center p-3"
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = listItemHoverStyle.backgroundColor)}
+                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "inherit")}
+                  >
+                     <MDBCardText onClick={() => handleAgentSchedule()} style={{fontFamily:'Georgina', fontSize:'18px', color: 'black'}}>
+                    <img
+                        src="calendar.webp"
+                        alt="Calendar"
+                        style={{ width: '25px', marginRight: '30px'}}
+                      /> 
+                    Agent Schedule</MDBCardText>
+                  </MDBListGroupItem>
+                  <MDBListGroupItem style={{ ...listItemStyle, ...customListItemStyle}}
+                    hover
+                    className="d-flex justify-content-between align-items-center p-3"
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = listItemHoverStyle.backgroundColor)}
+                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "inherit")}
+                  >
+                     <MDBCardText onClick={() => handleRegister()} style={{fontFamily:'Georgina', fontSize:'18px', color: 'black'}}>
+                    <img
+                        src="registerA.jpg"
+                        alt="User"
+                        style={{ width: '25px', marginRight: '30px'}}
+                      /> 
+                   Register Ticket Operator</MDBCardText>
+                  </MDBListGroupItem>
+                  
+                  <MDBListGroupItem style={{ ...listItemStyle, ...customListItemStyle}}
+                    hover
+                    className="d-flex justify-content-between align-items-center p-3"
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = listItemHoverStyle.backgroundColor)}
+                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "inherit")}
+                  >
+                    <MDBCardText onClick={() => handleViewProfile()} style={{fontFamily:'Georgina', fontSize:'18px', color: 'black'}}>
+                        <img
+                        src="pofile.jpg"
+                        alt="Profile"
+                        style={{ width: '25px', marginRight: '30px'}}
+                      /> 
+                      
+                  View Profile</MDBCardText>
+                  </MDBListGroupItem>
+                  <MDBListGroupItem style={{ ...listItemStyle, ...customListItemStyle}}
+                    hover
+                    className="d-flex justify-content-between align-items-center p-3"
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = listItemHoverStyle.backgroundColor)}
+                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "inherit")}
+                  >
+                    <MDBCardText onClick={() => handleRevenues()} style={{fontFamily:'Georgina', fontSize:'18px', color: 'black'}}>
+                        <img
+                        src="management.jpg"
+                        alt="Management"
+                        style={{ width: '25px', marginRight: '30px'}}
+                      /> 
+                  Management Details</MDBCardText>
+                  </MDBListGroupItem>
+                  <MDBListGroupItem style={{ ...listItemStyle, ...customListItemStyle}}
+                    hover
+                    className="d-flex justify-content-between align-items-center p-3"
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = listItemHoverStyle.backgroundColor)}
+                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "inherit")}
+                  >
+                    <MDBCardText onClick={() => handleFeed()} style={{fontFamily:'Georgina', fontSize:'18px', color: 'black'}}>
+                    <img
+                        src="feedback.jpg"
+                        alt="Feedback"
+                        style={{ width: '25px', marginRight: '30px'}}
+                      /> 
+                    Feedback</MDBCardText>
+               
+                  </MDBListGroupItem>
+                  <Button onClick={handlelogin} style={{fontFamily:'Georgina', width: '80px', backgroundColor:  "rgba(4, 55,55, 0.7)", marginLeft: '80px', marginTop: '75px', border: 'none'}}>Logout</Button>
+                </MDBListGroup>
+           
+              </MDBCardBody>    
+            </MDBCard>
+            </MDBCard>
+
+          </MDBCol>
+          <MDBCol lg="8">
+      <Container className="mt-5"style={{ backgroundColor: "white" }}>
+        <h2 className="mb-4" style={{fontFamily:'Georgina', textAlign:'center', color:'black', fontWeight: 'bold'}}>Management Details Page</h2>
         <Row className="mb-4 justify-content-center">
   <Col xs={6} md={3}>
     <div className="d-flex flex-column align-items-center">
       <img src="coins.png" alt="Image Placeholder" style={{ maxWidth: "100%", maxHeight: "150px", marginBottom: '10px'}} />
-      <Button onClick={handleShowAccountingPage} style={{ fontFamily: 'Georgina' ,  backgroundColor: 'rgba(5, 60 ,40, 1)', border: 'none' }}>Show Revenue</Button>
+      <Button onClick={handleShowAccountingPage} style={{ fontFamily: 'Georgina' ,  backgroundColor: "rgba(4, 55,55, 0.7) ", border: 'none' }}>Show Revenue</Button>
     </div>
   </Col>
   <Col xs={6} md={3}>
     <div className="d-flex flex-column align-items-center">
       <img src="customer.jpg" style={{ maxWidth: "100%", maxHeight: "150px", marginBottom: '10px' }} />
-      <Button onClick={handleShowCustomer} style={{ fontFamily: 'Georgina'  ,  backgroundColor: 'rgba(5, 60 ,40, 1)', border: 'none' }}>Show Customer Details</Button>
+      <Button onClick={handleShowCustomer} style={{ fontFamily: 'Georgina'  , backgroundColor: "rgba(4, 55,55, 0.7) ", border: 'none' }}>Show Customer Details</Button>
     </div>
   </Col>
   <Col xs={6} md={3}>
     <div className="d-flex flex-column align-items-center">
       <img src="agent.jpg" style={{ maxWidth: "100%", maxHeight: "150px", marginBottom: '10px' }} />
-      <Button onClick={handleSchedule} style={{ fontFamily: 'Georgina' ,  backgroundColor: 'rgba(5, 60 ,40, 1)', border: 'none'  }}>Show Agent Schedule</Button>
+      <Button onClick={handleSchedule} style={{ fontFamily: 'Georgina' ,  backgroundColor: "rgba(4, 55,55, 0.7) ", border: 'none'  }}>Show Agent Schedule</Button>
     </div>
   </Col>
 </Row>
         {showAccountingPage && (
           <div>
-            <h2 style={{fontFamily:'Georgina', textAlign:'center',   backgroundColor: 'rgba(47, 79, 79, 0.5)', color:'white'}}>Revenue Details</h2>
+            <h2 style={{fontFamily:'Georgina', textAlign:'center',   backgroundColor: 'white', color:'white'}}>Revenue Details</h2>
             <Table striped bordered hover>
               <thead>
                 <tr>
@@ -234,15 +413,21 @@ const App = () => {
                 </tr>
               </thead>
               <tbody>
+                
               {parkingLogs.map((log) => (
                 <tr key={log.id}>
-                  <td>{log.email}</td>
-                  <td><h5 style={{fontFamily:'Georgina', fontSize:'15px', color:'green'}}>Time in: </h5>{new Date(log.timeOut.seconds * 1000).toLocaleString()}
-                  <br></br>
-                  <h5 style={{fontFamily:'Georgina', fontSize:'15px', color:'red'}}>Time out: </h5>{new Date(log.timeIn.seconds * 1000).toLocaleString()}
-                  </td>
-                  <td>{log.name} - {log.paymentStatus}</td>
-                  <td>{user.parkingPay}</td>
+                 <td>{log.email}</td>
+    <td>
+      <h5 style={{fontFamily:'Georgina', fontSize:'15px', color:'green'}}>
+        Time in: {log.timeIn && new Date(log.timeIn.seconds * 1000).toLocaleString()}
+      </h5>
+      <br />
+      <h5 style={{fontFamily:'Georgina', fontSize:'15px', color:'red'}}>
+        Time out: {log.timeOut && new Date(log.timeOut.seconds * 1000).toLocaleString()}
+      </h5>
+    </td>
+    <td>{log.name} - {log.paymentStatus}</td>
+    <td>{user.parkingPay}</td>
                 </tr>
               ))}
               </tbody>
@@ -343,9 +528,21 @@ const App = () => {
             </tbody>
           </Table>
           </div>
+          
         )}
-      </Container>
+        
+
+              </Container>
+              </MDBCol>
+
+              </MDBRow>
+              
+              </MDBContainer>
+
+        
+      
 </section>
+
 );
 };
 

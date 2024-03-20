@@ -309,20 +309,7 @@ const Establishment = () => {
                       /> 
                    Register Ticket Operator</MDBCardText>
                   </MDBListGroupItem>
-                  <MDBListGroupItem style={{ ...listItemStyle, ...customListItemStyle}}
-                    hover
-                    className="d-flex justify-content-between align-items-center p-3"
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = listItemHoverStyle.backgroundColor)}
-                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "inherit")}
-                  >
-                  <MDBCardText onClick={() => handleButtonClick()} style={{fontFamily:'Georgina', fontSize:'18px', color: 'black'}}>
-                   <img
-                        src="infoPark.png"
-                        alt="User"
-                        style={{ width: '25px', marginRight: '30px'}}
-                      /> 
-                   Ticketing Information</MDBCardText>
-                  </MDBListGroupItem>
+                  
                   <MDBListGroupItem style={{ ...listItemStyle, ...customListItemStyle}}
                     hover
                     className="d-flex justify-content-between align-items-center p-3"
@@ -439,18 +426,14 @@ const Establishment = () => {
                   {parkingLogs.map((log) => (
                     <MDBCol md="4" key={log.id}>
                       <MDBCard>
-                        <img
-                            src={log.profileImageUrl}
-                          className="img-fluid"
-                          alt="img"
-                        />
+                       
                         <MDBCardBody style={{ fontFamily: "Times New Roman", fontSize: "15px" }}>
                           <MDBCardText>Name: {log.name} </MDBCardText>
                           <MDBCardText>Address: {log.address}</MDBCardText>
                           <MDBCardText>Vehicle: {log.car}</MDBCardText>
                           <MDBCardText>Vehicle Plate: {log.carPlateNumber}</MDBCardText>
                         <MDBCardText style={{color:"green"}}>Time in: {log.timeOut && log.timeIn.toDate().toLocaleString()}</MDBCardText>
-                        <MDBCardText style={{color: "red"}}>Time out: {log.timeOut && log.timeOut.toDate().toLocaleString()}</MDBCardText>*/
+                        <MDBCardText style={{color: "red"}}>Time out: {log.timeOut && log.timeOut.toDate().toLocaleString()}</MDBCardText>
                         </MDBCardBody>
                       </MDBCard>
                     </MDBCol>

@@ -187,7 +187,7 @@ function TicketInfo() {
           <div className="col-md-3">
           </div>
         </div>
-        <div style={{ marginLeft: '200px', marginTop: '40px', textAlign: 'center', justifyContent: 'center', width: '70%', fontFamily: 'Garamond',  ackgroundColor: "rgba(16, 50, 50, 0.8)", // Background color with transparency
+        <div style={{ marginLeft: '200px', marginTop: '40px', textAlign: 'center', justifyContent: 'center', width: '70%', fontFamily: 'Garamond',  backgroundColor: "rgba(16, 50, 50, 0.8)", // Background color with transparency
 }}>
         {loading ? (
             <Spinner animation="border" role="status">
