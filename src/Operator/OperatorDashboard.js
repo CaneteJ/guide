@@ -11,7 +11,18 @@ import { faCar, faCoins, faUser, faFileInvoiceDollar } from '@fortawesome/free-s
 import {db} from "../config/firebase"
 import {doc, getDoc, collection, query, where, getDocs} from 'firebase/firestore';
 import UserContext from '../UserContext';
-
+import OperatorReserve from './operatorReserve';
+import {
+  MDBCol,
+  MDBContainer,
+  MDBRow,
+  MDBCard,
+  MDBCardText,
+  MDBCardBody,
+  MDBCardImage,
+  MDBBtn,
+  MDBTypography,
+} from 'mdb-react-ui-kit';
 function OperatorDashboard() {
   const { user } = useContext(UserContext);
   const [agentFirst, setAgentFirstName] = useState(user.firstName || "");
@@ -104,43 +115,48 @@ function OperatorDashboard() {
   
   
   return (
-    <div style={{ backgroundColor: '#3b89ac', minHeight: "100vh"}}>
-    <Container>
+    <div className="gradient-custom-2" style={{ backgroundColor: 'white' }}>
     <nav className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: "#003851" }}>
-        <div className="container">
-          <Link className="navbar-brand" to="/">
-            SpotWise Parking Management System
-            </Link>
-            <p style={styles.welcomeMessage}>
-            <DropdownButton 
-                alignRight
-                variant="outline-light"
-                title={<FaUserCircle style={styles.icon} />}
-                id="dropdown-menu"
-              >
-                 <Dropdown.Item href="ViewSpace"><img
-                        src="slot1.jpeg"
-                        alt="Operator Parking Slot Logo"
-                        style={{ width: '20px', marginRight: '10px'}}
-                      />Dashboard</Dropdown.Item>
-                <Dropdown.Item href="OperatorProfile">
-                <img
-                        src="opname.jpg"
-                        alt="Operator Profile Logo"
-                        style={{ width: '20px', marginRight: '10px'}}
-                      />Profile</Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Item href="/"><img
-                        src="logout.png"
-                        alt="Operator Logout Logo"
-                        style={{ width: '20px', marginRight: '10px'}}
-                      />Logout</Dropdown.Item>
-              </DropdownButton>
-              </p>
-        </div>
-      </nav>
+      <div className="container">
+        <a className="navbar-brand">
+          Spotwise
+        </a>
+        
+        <p style={styles.welcomeMessage}>
+          <DropdownButton
+            alignRight
+            variant="outline-light"
+            title={<FaUserCircle style={styles.icon} />}
+            id="dropdown-menu"
+          >
+             <Dropdown.Item href="ViewSpace"><img
+                      src="slot1.jpeg"
+                      alt="Operator Parking Slot Logo"
+                      style={{ width: '20px', marginRight: '10px'}}
+                    />Dashboard</Dropdown.Item>
+            <Dropdown.Item href="OperatorDashboard"><img
+                      src="dashboard.jpg"
+                      alt="Operator Dashboard Logo"
+                      style={{ width: '20px', marginRight: '10px'}}
+                    />Records</Dropdown.Item>
+            <Dropdown.Divider />
+            <Dropdown.Item href="/"><img
+                      src="logout.png"
+                      alt="Operator Logout Logo"
+                      style={{ width: '20px', marginRight: '10px'}}
+                    />Logout</Dropdown.Item>
+          </DropdownButton>
+        </p>
+      </div>
+    </nav>
+    <MDBContainer className="py-4">
+  <MDBRow>
+    <MDBCol lg="4">
+      <OperatorReserve />
+    </MDBCol>
+    <MDBCol lg="8">
+
       <div className="container text-center" style={{ marginTop: '30px', fontFamily: 'Courier New', fontSize: '30px'}}>
-        <p style={{color:'white'}}>Welcome {agentFullName}  </p>
       </div>
       <div className="row mt-3 ">
         <div className="col-md-3">
@@ -199,11 +215,18 @@ function OperatorDashboard() {
                   <td style={{ color: log.paymentStatusColor }}>{log.paymentStatus}</td>
                 </tr>
               ))}
+              
             </tbody>
+            
           </Table>
+          
           </div>
-    </Container>
-    </div>
+          </MDBCol>
+          </MDBRow>
+
+</MDBContainer>
+          </div>
+
   );
 }
 

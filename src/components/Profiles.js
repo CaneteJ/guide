@@ -326,10 +326,10 @@ export default function EditButton() {
                             <h1 style={{ color: "black", fontSize: "30px"  }}> Personal Info </h1>
                         </div>
 
-                        <MDBContainer className="py-5" style={{ backgroundColor: "white" }}>
+                        <MDBContainer className="py-5" style={{ backgroundColor: "#fbfbfb" }}>
                             <MDBRow>
                                 <MDBCol lg="9" xl="12">
-                                    <MDBCard style={{ border: "none", boxShadow: "none",backgroundColor: "#fbfbfb"}}>
+                                    <MDBCard style={{ border: "none", boxShadow: "none",backgroundColor: "#f2f2f2"}}>
                                         <div className="d-flex flex-column">
                                             <div className="rounded-top text-white ms-4 mt-4 d-flex align-items-center">
                                                 <MDBCardImage src={profileImageUrl || "defaultt.png"} alt="Profile" className="mt-2 mb-2 img-thumbnail" fluid style={{ width: "150px", zIndex: "1", borderRadius: "50%" }} />

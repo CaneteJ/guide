@@ -460,9 +460,9 @@ const handleAcceptReservation = async (reservationId, slotId) => {
     <div style={{ textAlign: 'center' }}>
         < nav className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: "#003851" }}>
         <div className="container">
-          <Link className="navbar-brand" to="/">
-            SpotWise Parking Management System
-          </Link>
+          <a className="navbar-brand">
+            Spotwise
+          </a>
           <p style={styles.welcomeMessage}>
             <DropdownButton 
             variant="outline-light"

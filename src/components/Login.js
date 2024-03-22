@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import UserContext from '../UserContext';
+import { Link } from "react-router-dom";
+
 import { Dropdown } from 'bootstrap';
 
 function Login() {
@@ -98,10 +100,9 @@ function Login() {
   };
   const formContainerStyle = {
     backgroundColor: 'white',
-    marginTop:'100px',
+    marginTop:'30px',
     padding: '30px',
     borderRadius: '10px',
-    boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.2)',
     width: '400px',
     textAlign: 'center',
   };
@@ -119,7 +120,7 @@ function Login() {
   const buttonStyle = {
     width: '100%',
     padding: '12px',
-    backgroundColor: '#1877f2',
+    backgroundColor: 'rgba(4, 55,55, 0.7)',
     color: 'white',
     border: 'none',
     borderRadius: '5px',
@@ -130,7 +131,8 @@ function Login() {
   const buttonStyle2 = {
     width: '100%',
     padding: '12px',
-    backgroundColor: 'green',
+    marginTop: "25px",
+    backgroundColor: 'rgba(4, 55,55, 0.7)',
     color: 'white',
     border: 'none',
     borderRadius: '5px',
@@ -142,7 +144,7 @@ function Login() {
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: '15px',
-    backgroundColor: 'black',
+    backgroundColor: '#003851',
     color: 'white',
     width: '100%',
   };
@@ -156,8 +158,11 @@ function Login() {
   return (
     <div style={containerStyle}>
         <div style={navbarStyle}>
-        <div style={logoStyle}>SpotWise Parking Management</div>
+        <Link className="navbar-brand" to="/Dashboard" style={{ fontSize: '25px', marginLeft: "100px"}}>
+            Spotwise
+          </Link>
       </div>
+      <h1 style = {{marginTop: "70px"}}> Sign in</h1>
       <div style={formContainerStyle}>
          <select
           value={userType}
@@ -201,13 +206,13 @@ function Login() {
         </div>
           <button type="submit" style={buttonStyle}>
             Log In
-          </button>
-          <p style={{ marginTop: '10px', fontSize: '14px' }}>
-           <a href="/forget">Forget Password?</a>
-          </p>
+          </button>     
           <button type="submit" style={buttonStyle2} onClick={handleCreate}>
             Create Account
           </button>
+          <p style={{ marginTop: '20px', fontSize: '14px' }}>
+           <a href="/forget">Forgot Password?</a>
+          </p>
         </form>
       </div>
     </div>
