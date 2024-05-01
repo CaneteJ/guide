@@ -192,7 +192,7 @@ export default function EditButton() {
               title={<FaUserCircle style={styles.icon} />}
               id="dropdown-menu"
             >
-               <Dropdown.Item href="ViewSpace"><img
+               <Dropdown.Item href="DashboardOp"><img
                         src="slot1.jpeg"
                         alt="Operator Parking Slot Logo"
                         style={{ width: '20px', marginRight: '10px'}}

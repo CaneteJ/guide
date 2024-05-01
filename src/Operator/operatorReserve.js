@@ -107,7 +107,7 @@ const OperatorReserve = () => {
         navigate("/OperatorDashboard")
     }
     const handleDashboard = () => {
-        navigate("/ViewSpace")
+        navigate("/DashboardOp")
     }
 
 

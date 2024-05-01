@@ -220,10 +220,10 @@ function DashboardOp() {
 
     useEffect(() => {
         setSummaryCardsData([
-            { title: 'Total Parking Spaces', value: `${totalParkingSpaces}`, imgSrc: 'pending.png', cardType: 'total' },
-            { title: 'Occupied Spaces', value: `${pendingAccounts.length} Account Pending`, imgSrc: 'pending.png', cardType: 'occupied' },
-            { title: 'Available Spaces', value: `${establishments.length} Registered`, imgSrc: 'check.png', cardType: 'available' },
-            { title: 'Reserve Spaces', value: `${parkingSeeker.length} Registered`, imgSrc: 'check.png', cardType: 'reserve' },
+            { title: 'Total Parking Spaces', value: `3 Total Parking Spaces`, imgSrc: 'pending.png', cardType: 'total' },
+            { title: 'Occupied Spaces', value: `1 Occupied Spaces`, imgSrc: 'pending.png', cardType: 'occupied' },
+            { title: 'Available Spaces', value: `2 Available Spaces`, imgSrc: 'check.png', cardType: 'available' },
+            { title: 'Reserve Spaces', value: `0 Reserve Spaces`, imgSrc: 'check.png', cardType: 'reserve' },
             { title: 'Add Vehicle', imgSrc: 'check.png', cardType: 'agents' }
         ]);
     }, [pendingAccounts, establishments, parkingSeeker, agent]);
@@ -232,7 +232,6 @@ function DashboardOp() {
         console.log(`Card clicked: ${cardType}`);
         setActiveCard(activeCard === cardType ? '' : cardType);
     };
-    
 
     const renderFormBasedOnCardType = () => {
         let data = [];
@@ -246,10 +245,10 @@ function DashboardOp() {
                     <thead className="bg-light">
                         <tr>
                         <th>Name</th>
-                        <th>Title</th>
-                        <th>Status</th>
+                        <th>Contact Number</th>
+                        <th>Plate Number</th>
                         <th>Position</th>
-                        <th>Actions</th>
+                        <th>Slot Number</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -263,8 +262,8 @@ function DashboardOp() {
                                 className="rounded-circle"
                                 />
                             <div className="ms-3">
-                                <p className="fw-bold mb-1">John Doe</p>
-                                <p className="text-muted mb-0">john.doe@gmail.com</p>
+                                <p className="fw-bold mb-1">gg</p>
+                                <p className="text-muted mb-0">gg@gmail.com</p>
                             </div>
                             </div>
                         </td>
@@ -272,10 +271,14 @@ function DashboardOp() {
                             <p className="fw-normal mb-1">Software engineer</p>
                             <p className="text-muted mb-0">IT department</p>
                         </td>
+                        <td>Senior</td>
                         <td>
                             <span className="badge badge-success rounded-pill d-inline">Active</span>
                         </td>
                         <td>Senior</td>
+                        <td>
+                            <span className="badge badge-success rounded-pill d-inline">Active</span>
+                        </td>
                         <td>
                             <button type="button" className="btn btn-link btn-sm btn-rounded">
                             Edit
@@ -380,20 +383,19 @@ function DashboardOp() {
     return (
         <div>
         <div className="admin-dashboard">
-      <div className="sidebar">
-      <div className="admin-container">
-    <img 
-      src="customer.jpg"
-      alt="Admin"
-      className="admin-pic" 
-      style={{ width: '50px', marginRight: '10px' }} 
-    />
-    <span className="admin-text">Admin</span>
-  </div>
-  <p><a href ='FetchEstablishments' style={{ color: 'white', textDecoration: 'none' }}> Establishment List</a></p>
-  <p><a href ='FetchParkingUsers' style={{ color: 'white', textDecoration: 'none' }}> Parking Seeker List</a></p>
-
-  <p><a href ='FetchAgents' style={{ color: 'white', textDecoration: 'none' }}> Agents List</a></p>
+            <div className="sidebar">
+                <div className="admin-container">
+                    <img 
+                        src="customer.jpg"
+                        alt="Admin"
+                        className="admin-pic" 
+                        style={{ width: '50px', marginRight: '10px' }} 
+                    />
+                    {/* Display the user's email if available */}
+                    <h1 style={{fontFamily:'Helvetica', fontSize: 18}}>Welcome {user?.firstName || 'No name found'}</h1>
+                </div>
+  <p><a href ='OperatorProfile' style={{ color: 'white', textDecoration: 'none' }}> Menu</a></p>
+ 
        
       </div>
       <div className="main-content">
