@@ -8,6 +8,7 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import UserContext from '../UserContext';
 import { Link } from "react-router-dom";
 
+
 import { Dropdown } from 'bootstrap';
 
 function Login() {
@@ -37,48 +38,47 @@ function Login() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
+  
       if (user) {
-        let collectionName = '';
-
-        if (userType === 'agents') {
-          collectionName = 'agents';
-        } else if (userType === 'establishment') {
-          collectionName = 'establishments';
-        } else {
-          alert('Please select a valid account type.');
-          return;
+        const agentsRef = query(collection(db, 'agents'), where('email', '==', email));
+        const establishmentsRef = query(collection(db, 'establishments'), where('email', '==', email));
+  
+        const [agentsSnapshot, establishmentsSnapshot] = await Promise.all([
+          getDocs(agentsRef),
+          getDocs(establishmentsRef)
+        ]);
+  
+        let userData = null;
+        let path = '';
+  
+        if (!agentsSnapshot.empty) {
+          userData = agentsSnapshot.docs[0].data();
+          path = '/ViewSpace';  
+        } else if (!establishmentsSnapshot.empty) {
+          userData = establishmentsSnapshot.docs[0].data();
+          path = '/Dashboard'; 
         }
-
-        const collectionRef = query(collection(db, collectionName), where('email', '==', email));
-        const querySnapshot = await getDocs(collectionRef);
-
-        if (!querySnapshot.empty) {
-          const userData = querySnapshot.docs[0].data();
+  
+        if (userData) {
           setUser(userData);
-
+          navigate(path);
           alert('Login successful!');
-
-          if (userType === 'agents') {
-            navigate('/ViewSpace');
-          } else {
-            navigate('/Dashboard');
-          }
         } else {
           alert('User not found. Please try again.');
         }
       } else {
-        alert('User not found. Please try again.');
+        alert('Authentication failed');
       }
     } catch (error) {
       console.error('Error logging in:', error);
-      alert('Error logging in. Please try again.');
+      alert('Error logging in: ' + error.message);
     }
   };
+  
 
 
 
@@ -88,7 +88,11 @@ function Login() {
     alignItems: 'center',
     minHeight: '100vh',
     backgroundColor: 'white',
+    position: 'relative',
+    width: '100%',
+    height: '150%',
   };
+
   const selectStyle = {
     width: '100%',
     padding: '10px',
@@ -99,13 +103,27 @@ function Login() {
     fontFamily: 'Georgina'
   };
   const formContainerStyle = {
+    display: 'flex', 
+    alignItems: 'center', 
     backgroundColor: 'white',
-    marginTop:'30px',
+    marginTop: '50px',
     padding: '30px',
-    borderRadius: '10px',
-    width: '400px',
-    textAlign: 'center',
+    borderRadius: '50px',
+    width: '900px',
+    boxShadow: '0 4px 16px 0 rgba(0,0,0,0.5)',
+    zIndex: 2,
+  
   };
+  const formStyle = {
+    width: '50%',
+    marginLeft: 50,
+  };
+  const imageContainerStyle = {
+    width: '50%', 
+    marginLeft: 50,
+    borderRadius: '10px',
+  };
+
 
   const inputStyle = {
     width: '100%',
@@ -114,7 +132,9 @@ function Login() {
     border: '1px solid #ccc',
     borderRadius: '5px',
     fontSize: '16px',
-    fontFamily:'Georgina'
+    fontFamily:'Georgina',
+    borderRadius: '100px',
+   
   };
 
   const buttonStyle = {
@@ -126,6 +146,9 @@ function Login() {
     borderRadius: '5px',
     cursor: 'pointer',
     fontSize: '18px',
+    backgroundColor: '#39e75f',
+    fontFamily:'Helvetica',
+    borderRadius: '100px',
   };
 
   const buttonStyle2 = {
@@ -138,13 +161,21 @@ function Login() {
     borderRadius: '5px',
     cursor: 'pointer',
     fontSize: '18px',
+    fontFamily:'Helvetica',
+    borderRadius: '100px',
+  };
+  const backgroundImage = {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   };
   const navbarStyle = {
     display: 'flex',
+
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: '15px',
-    backgroundColor: '#003851',
+    backgroundColor: ' #132B4B',
     color: 'white',
     width: '100%',
   };
@@ -153,31 +184,71 @@ function Login() {
     fontSize: '24px',
     fontWeight: 'bold',
   };
-
+  const imageStyle = {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    width: '50%',
+    height: '100%',
+    objectFit: 'absolute',  
+    zIndex: -1  
+  };
+  const separtor = {
+    display: 'flex',  
+    alignItems: 'center',
+    color: '#808080',
+    marginTop: 10,    
+    marginBottom: 10,
+  };
+  const line = {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#FFD700',
+    marginBottom: 30,
+  };
+  const logoContainer = {
+    flexDirection: 'row', // Arrange the logos side by side
+   justifyContent: 'space-around',
+    marginBottom: 10,
+    marginTop: 10,
+  };
+  const logo = {
+    width: 50,
+    height: 50,
+    marginRight: 30,
+    resizeMode: 'contain',
+  };
+  const logo2 = {
+    width: 50,
+    height: 50,
+    resizeMode: 'contain',
+    marginRight: 30,
+  };
+  const logo3 = {
+    width: 50,
+    height: 50,
+    resizeMode: 'contain',
+  }; 
 
   return (
     <div style={containerStyle}>
         <div style={navbarStyle}>
-        <Link className="navbar-brand" to="/Dashboard" style={{ fontSize: '25px', marginLeft: "100px"}}>
+        <img src="wingsMoto1.png" alt="Wings Moto" style={imageStyle} />
+        <Link className="navbar-brand" to="/Dashboard" style={{ fontSize: '25px', marginLeft: "100px", fontFamily:'Helvetica', color:'white'}}
+        >
             Spotwise
           </Link>
       </div>
-      <h1 style = {{marginTop: "70px"}}> Sign in</h1>
       <div style={formContainerStyle}>
-         <select
-          value={userType}
-          onChange={(e) => setUserType(e.target.value)}
-          style={selectStyle}
-        >
-          <option value="" >Please select type of account</option>
-          <option value="agents">Operator</option>
-          <option value="establishment">Establishment</option>
-        </select>
-        <form onSubmit={handleSubmit}>
+        <div style={formStyle}>
+          <h1 style={{ marginBottom: "50px", fontFamily: 'Helvetica', textAlign:'center' }}>Sign in</h1>
+          <form onSubmit={handleSubmit}>
           <div>
             <input
               type="text"
-              placeholder="Username or Email"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -213,8 +284,19 @@ function Login() {
           <p style={{ marginTop: '20px', fontSize: '14px' }}>
            <a href="/forget">Forgot Password?</a>
           </p>
+          <div style={separtor}></div>
+          <div style={line}></div>
+          <div style={logoContainer}>
+            <img src ="facebook.png" style={logo}/>
+            <img src ="googleLogo.png" style={logo2}/>
+            <img src ="instagram.png" style={logo3}/>
+          </div>
         </form>
       </div>
+      <div style={imageContainerStyle}>
+          <img src="logoP.png" alt="Logo" style={{ width: '100%', height: 'auto', borderRadius: '10px'}} />
+        </div>
+    </div>
     </div>
   );
 }
