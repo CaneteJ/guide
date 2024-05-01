@@ -72,8 +72,6 @@ function DashboardOp() {
                     });
                 }
             });
-            
-    
             console.log("Fetched Floors:", allFloors);
             setFloorOptions(allFloors);
             setTotalParkingSpaces(totalSlots);
@@ -122,15 +120,27 @@ function DashboardOp() {
         }
     
         const floor = slotSets[currentSetIndex];
-        if (!floor || !floor.slots || slotIndex < 0 || slotIndex >= floor.slots.length) {
-            setErrorMessage(`Slot index ${slotIndex} is out of bounds.`);
+        if (!floor || !floor.slots || slotIndex < 0 || slotIndex >= floor.slots.length || isNaN(slotIndex)) {
+            setErrorMessage(`Slot index ${slotIndex} is out of bounds or invalid.`);
             return;
         }
     
-        
+        // Ensure floorTitle is valid
         const floorTitle = floor.title;
-        const slotId = slotIndex + 1;
-        const timeIn = new Date().toISOString(); // Convert time to ISO string for Firebase
+        if (!floorTitle) {
+            console.error("Floor title is undefined", { floor });
+            setErrorMessage("Floor title is missing.");
+            return;
+        }
+    
+        const slotId = slotIndex + 1;  // Ensure slotId is a valid number
+        if (isNaN(slotId)) {
+            console.error("Computed slotId is NaN", { slotIndex });
+            setErrorMessage("Invalid slot ID computed.");
+            return;
+        }
+    
+        const timeIn = new Date().toISOString(); 
     
         const updatedSlot = {
             occupied: true,
@@ -147,10 +157,11 @@ function DashboardOp() {
         };
     
         floor.slots[slotIndex] = updatedSlot;
-        setSlotSets([...slotSets]); // Trigger re-render
+        setSlotSets([...slotSets]); 
     
-        const slotDocRef = doc(db, 'establishments', user.managementName, 'floors', floorTitle, 'slots', slotId.toString());
         try {
+            console.log('Attempting to write to path:', 'establishments', user.managementName, 'floors', floorTitle, 'slots', slotId.toString());
+            const slotDocRef = doc(db, 'establishments', user.managementName, 'floors', floorTitle, 'slots', slotId.toString());
             await setDoc(slotDocRef, updatedSlot, { merge: true });
             console.log(`Slot ${slotId} assigned and updated in Firebase for floor ${floorTitle}.`);
             setErrorMessage("");
@@ -159,7 +170,6 @@ function DashboardOp() {
             setErrorMessage("Failed to update slot in Firebase.");
         }
     };
-    
     
     const searchInFirebase = async (searchInput) => {
         try {
@@ -225,30 +235,70 @@ function DashboardOp() {
     
 
     const renderFormBasedOnCardType = () => {
-        let data ;
+        let data = [];
         let headers = [];
         switch (activeCard) {
             case 'occupied':
-                data = pendingAccounts;
+                data = pendingAccounts || []; // Ensure data is an array
                 headers = ["Email", "Contact Number", "Plate Number", "Slot Number"];
+                return (
+                    <table className="table align-middle mb-0 bg-white">
+                    <thead className="bg-light">
+                        <tr>
+                        <th>Name</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Position</th>
+                        <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <td>
+                            <div className="d-flex align-items-center">
+                            <img
+                                src="https://mdbootstrap.com/img/new/avatars/8.jpg"
+                                alt=""
+                                style={{ width: '45px', height: '45px' }}
+                                className="rounded-circle"
+                                />
+                            <div className="ms-3">
+                                <p className="fw-bold mb-1">John Doe</p>
+                                <p className="text-muted mb-0">john.doe@gmail.com</p>
+                            </div>
+                            </div>
+                        </td>
+                        <td>
+                            <p className="fw-normal mb-1">Software engineer</p>
+                            <p className="text-muted mb-0">IT department</p>
+                        </td>
+                        <td>
+                            <span className="badge badge-success rounded-pill d-inline">Active</span>
+                        </td>
+                        <td>Senior</td>
+                        <td>
+                            <button type="button" className="btn btn-link btn-sm btn-rounded">
+                            Edit
+                            </button>
+                        </td>
+                        </tr>
+                    </tbody>
+                    </table>
+                );
                 break;
             case 'available':
-                data = establishments;
+                data = establishments || []; // Ensure data is an array
                 headers = ["Location", "Slot Number"];
                 break;
             case 'reserve':
-                data = parkingSeeker;
+                data = parkingSeeker || []; // Ensure data is an array
                 headers = ["Email", "Plate Number", "Location", "Slot Number", "Date"];
                 break;
             case 'agents':
-                return <AddVehicleForm onSearch={searchInFirebase} floorOptions={floorOptions} handleAddToSlot={handleAddToSlot} />;
+                return <AddVehicleForm onSearch={searchInFirebase} floorOptions={floorOptions || []} handleAddToSlot={handleAddToSlot} />;
             default:
                 return null;
         }
-    //////
-    //////
-    /////
-    
         return (
             <section className="intro">
                 <div className="bg-image h-100" style={{ backgroundColor: '#6095F0' }}>
