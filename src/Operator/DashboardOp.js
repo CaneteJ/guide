@@ -25,7 +25,6 @@ function DashboardOp() {
     const [currentSetIndex, setCurrentSetIndex] = useState(0);
     const [totalParkingSpaces, setTotalParkingSpaces] = useState(0);
     const [floorOptions, setFloorOptions] = useState([]);
-    
    
     
     const fetchTotalParkingSpaces = async () => {
@@ -36,19 +35,27 @@ function DashboardOp() {
             let totalSpaces = 0;
             querySnapshot.forEach(doc => {
                 const data = doc.data();
+                console.log("Establishment data:", data); // Debugging line
                 if (data.totalSlots) {
+                    console.log("Slots before parsing:", data.totalSlots); // Check the raw value
                     totalSpaces += parseInt(data.totalSlots, 10);
+                    console.log("Current total after adding:", totalSpaces); // Check the cumulative total
                 }
             });
+            console.log("Computed total spaces:", totalSpaces); // Debugging line
             setTotalParkingSpaces(totalSpaces);
-            console.log("Total number of Spaces", totalSpaces);
+        } else {
+            console.log("User or managementName not set"); // Debug if user or managementName is not available
         }
     };
-
+    
     useEffect(() => {
         fetchTotalParkingSpaces();
-    }, [user]);  
+    }, [user]);
     
+    useEffect(() => {
+        console.log("Total parking spaces updated in UI:", totalParkingSpaces);
+    }, [totalParkingSpaces]);
     const fetchFloors = async () => {
         if (user && user.managementName) {
             const establishmentsRef = collection(db, "establishments");
@@ -78,6 +85,10 @@ function DashboardOp() {
             setTotalParkingSpaces(totalSlots);
         }
     };
+    useEffect(() => {
+        fetchFloors();
+    }, [user]);
+    
     
     useEffect(() => {
         console.log("Slot Sets Updated:", slotSets);
@@ -212,16 +223,40 @@ function DashboardOp() {
         };
         fetchPendingAccounts();
     }, []);
-
     useEffect(() => {
         setSummaryCardsData([
-            { title: 'Total Parking Spaces', value: `3 Total Parking Spaces`, imgSrc: 'pending.png', cardType: 'total' },
-            { title: 'Occupied Spaces', value: `1 Occupied Spaces`, imgSrc: 'pending.png', cardType: 'occupied' },
-            { title: 'Available Spaces', value: `2 Available Spaces`, imgSrc: 'check.png', cardType: 'available' },
-            { title: 'Reserve Spaces', value: `0 Reserve Spaces`, imgSrc: 'check.png', cardType: 'reserve' },
-            { title: 'Add Vehicle', imgSrc: 'check.png', cardType: 'agents' }
+            { 
+                title: 'Total Parking Spaces', 
+                value: `${totalParkingSpaces} Total Parking Spaces`, // Use totalParkingSpaces from state
+                imgSrc: 'pending.png', 
+                cardType: 'total' 
+            },
+            { 
+                title: 'Occupied Spaces', 
+                value: `1 Occupied Spaces`, // Update this dynamically if you have the data
+                imgSrc: 'pending.png', 
+                cardType: 'occupied' 
+            },
+            { 
+                title: 'Available Spaces', 
+                value: `${totalParkingSpaces - 1} Available Spaces`, // Assuming 1 space occupied, update dynamically
+                imgSrc: 'check.png', 
+                cardType: 'available' 
+            },
+            { 
+                title: 'Reserve Spaces', 
+                value: `0 Reserve Spaces`, // Update this dynamically if you have the data
+                imgSrc: 'check.png', 
+                cardType: 'reserve' 
+            },
+            { 
+                title: 'Add Vehicle', 
+                imgSrc: 'check.png', 
+                cardType: 'agents' 
+            }
         ]);
-    }, [pendingAccounts, establishments, parkingSeeker, agent]);
+    }, [totalParkingSpaces, pendingAccounts, establishments, parkingSeeker, agent]);  // Add any other dependencies if needed
+    
 
     const handleCardClick = (cardType) => {
         console.log(`Card clicked: ${cardType}`);
