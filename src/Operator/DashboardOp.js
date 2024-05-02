@@ -26,7 +26,8 @@ function DashboardOp() {
     const [totalParkingSpaces, setTotalParkingSpaces] = useState(0);
     const [floorOptions, setFloorOptions] = useState([]);
     
-
+   
+    
     const fetchTotalParkingSpaces = async () => {
         if (user && user.managementName) {
             const establishmentsRef = collection(db, "establishments");
@@ -96,8 +97,10 @@ function DashboardOp() {
     }, [user]); // Refetch when the user object changes
     
 
-    const handleAddToSlot = async (carPlateNumber, slotIndex) => {
-        if (!carPlateNumber) {
+    const handleAddToSlot = async (carPlateNumber, slotIndex, currentSetIndex) => {
+        console.log("Attempting to add to slot:", { carPlateNumber, slotIndex, currentSetIndex });
+    
+        if (!carPlateNumber || carPlateNumber.trim() === "") {
             setErrorMessage("Please enter a plate number.");
             return;
         }
@@ -125,51 +128,43 @@ function DashboardOp() {
             return;
         }
     
-        // Ensure floorTitle is valid
-        const floorTitle = floor.title;
-        if (!floorTitle) {
-            console.error("Floor title is undefined", { floor });
-            setErrorMessage("Floor title is missing.");
-            return;
-        }
+        const floorTitle = floor.floorName || "General Parking"; // Fallback to 'General Parking' if undefined
+        console.log("Saving slot for floor:", floorTitle);
     
-        const slotId = slotIndex + 1;  // Ensure slotId is a valid number
-        if (isNaN(slotId)) {
-            console.error("Computed slotId is NaN", { slotIndex });
-            setErrorMessage("Invalid slot ID computed.");
-            return;
-        }
-    
-        const timeIn = new Date().toISOString(); 
+        const slotId = slotIndex + 1;  // Normalize the slotId
+        const timeIn = new Date().toISOString();
+        const timestamp = new Date();
+        const uniqueSlotId = `${floorTitle}-${slotIndex}-${timestamp.getTime()}`; // Unique ID based on timestamp
     
         const updatedSlot = {
             occupied: true,
+            timestamp: timeIn,
             userDetails: {
                 ...userDetails,
                 email: userDetails?.email || "",
                 contactNumber: userDetails?.contactNumber || "",
-                carPlateNumber: userDetails?.carPlateNumber || carPlateNumber,
+                carPlateNumber: carPlateNumber,
                 slotId: slotIndex,
                 agent: `${user.firstName || ''} ${user.lastName || ''}`,
                 floorTitle,
-                timeIn,
+                timeIn
             }
         };
     
         floor.slots[slotIndex] = updatedSlot;
-        setSlotSets([...slotSets]); 
+        setSlotSets([...slotSets]);
     
         try {
-            console.log('Attempting to write to path:', 'establishments', user.managementName, 'floors', floorTitle, 'slots', slotId.toString());
-            const slotDocRef = doc(db, 'establishments', user.managementName, 'floors', floorTitle, 'slots', slotId.toString());
+            const slotDocRef = doc(db, 'spaces', user.managementName, 'floors', floorTitle, 'slots', uniqueSlotId);
             await setDoc(slotDocRef, updatedSlot, { merge: true });
-            console.log(`Slot ${slotId} assigned and updated in Firebase for floor ${floorTitle}.`);
+            console.log(`Slot ${uniqueSlotId} assigned and updated on Firebase for floor ${floorTitle}.`);
             setErrorMessage("");
         } catch (error) {
             console.error("Failed to update slot in Firebase:", error);
             setErrorMessage("Failed to update slot in Firebase.");
         }
     };
+    
     
     const searchInFirebase = async (searchInput) => {
         try {
@@ -247,7 +242,7 @@ function DashboardOp() {
                         <th>Name</th>
                         <th>Contact Number</th>
                         <th>Plate Number</th>
-                        <th>Position</th>
+                        <th>Floor</th>
                         <th>Slot Number</th>
                         </tr>
                     </thead>
@@ -271,11 +266,11 @@ function DashboardOp() {
                             <p className="fw-normal mb-1">Software engineer</p>
                             <p className="text-muted mb-0">IT department</p>
                         </td>
-                        <td>Senior</td>
+                        <td>Abc23</td>
                         <td>
-                            <span className="badge badge-success rounded-pill d-inline">Active</span>
+                            <p className="fw-normal mb-1">First</p>
                         </td>
-                        <td>Senior</td>
+                        <td>1</td>
                         <td>
                             <span className="badge badge-success rounded-pill d-inline">Active</span>
                         </td>
@@ -292,10 +287,97 @@ function DashboardOp() {
             case 'available':
                 data = establishments || []; // Ensure data is an array
                 headers = ["Location", "Slot Number"];
+                return (
+                    <table className="table align-middle mb-0 bg-white">
+                    <thead className="bg-light">
+                        <tr> 
+                        <th>Floor</th>
+                        <th>Slot Number</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <td>
+                            <p className="fw-normal mb-1">Second</p>
+                        </td>
+                        <td>1</td>
+                        <td>
+                            <span className="badge badge-success rounded-pill d-inline">Active</span>
+                        </td>
+                        <td>
+                            <button type="button" className="btn btn-link btn-sm btn-rounded">
+                            Edit
+                            </button>
+                        </td>
+                        </tr>
+                        <tr>
+                        <td>
+                            <p className="fw-normal mb-1">Second</p>
+                        </td>
+                        <td>2</td>
+                        <td>
+                            <span className="badge badge-success rounded-pill d-inline">Active</span>
+                        </td>
+                        <td>
+                            <button type="button" className="btn btn-link btn-sm btn-rounded">
+                            Edit
+                            </button>
+                        </td>
+                        </tr>
+                    </tbody>
+                    </table>
+                );
                 break;
             case 'reserve':
                 data = parkingSeeker || []; // Ensure data is an array
                 headers = ["Email", "Plate Number", "Location", "Slot Number", "Date"];
+                return (
+                    <table className="table align-middle mb-0 bg-white">
+                    <thead className="bg-light">
+                        <tr> 
+                        <th>Email</th>
+                        <th>Plate Number</th>
+                        <th>Location</th>
+                        <th>Slot Number</th>
+                        <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <td>
+                            <p className="fw-normal mb-1"></p>
+                        </td>
+                        <td></td>
+                        <td>
+                            <span className="badge badge-success rounded-pill d-inline">Active</span>
+                        </td>
+                        <td>
+                        </td>
+                        <td></td>
+                        <button type="button" className="btn btn-link btn-sm btn-rounded">
+                            Edit
+                            </button>
+                        </tr>
+                        <tr>
+                        <td>
+                            <p className="fw-normal mb-1"></p>
+                        </td>
+                        <td></td>
+                        <td>
+                            <span className="badge badge-success rounded-pill d-inline">Active</span>
+                        </td>
+                        <td>
+                        </td>
+                        <td></td>
+                        <td>
+                        <button type="button" className="btn btn-link btn-sm btn-rounded">
+                            Edit
+                            </button>
+                        </td>
+                        </tr>
+                    </tbody>
+                    </table>
+                );
                 break;
             case 'agents':
                 return <AddVehicleForm onSearch={searchInFirebase} floorOptions={floorOptions || []} handleAddToSlot={handleAddToSlot} />;
@@ -323,7 +405,7 @@ function DashboardOp() {
                                                             {headers.map((header, index) => (
                                                                 <th scope="col" key={index}>{header.toUpperCase()}</th>
                                                             ))}
-                                                            <th scope="col">Action</th>
+                                                            <th scope="col"></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -337,11 +419,7 @@ function DashboardOp() {
                                                                 {headers.map((header, subIndex) => (
                                                                     <td key={`${index}-${subIndex}`}>{item[header.toLowerCase().replace(/ /g, '')]}</td>
                                                                 ))}
-                                                                <td>
-                                                                    <button type="button" className="btn btn-danger btn-sm px-3" onClick={() => handleDecline(item.id)}>
-                                                                        <i className="fas fa-times">X</i>
-                                                                    </button>
-                                                                </td>
+                                                               
                                                             </tr>
                                                         ))}
                                                     </tbody>
@@ -422,11 +500,18 @@ function AddVehicleForm({ onSearch, floorOptions, handleAddToSlot }) {
     const [selectedFloor, setSelectedFloor] = useState('');
     const [slotOptions, setSlotOptions] = useState([]);
     const [selectedSlot, setSelectedSlot] = useState('');
-
+    const [currentSetIndex, setCurrentSetIndex] = useState(0);
+    
+    useEffect(() => {
+        const newIndex = floorOptions.findIndex(f => f.floorName === selectedFloor);
+        console.log(`Updating currentSetIndex: ${newIndex} for floor: ${selectedFloor}`);
+        setCurrentSetIndex(newIndex);
+    }, [selectedFloor, floorOptions]);
     useEffect(() => {
         console.log("Floor options updated:", floorOptions);
         if (floorOptions.length > 0) {
             setSelectedFloor(floorOptions[0].floorName); // Set default selected floor
+            console.log("Initial floor set to:", floorOptions[0].floorName);
         }
     }, [floorOptions]);
 
@@ -442,6 +527,9 @@ function AddVehicleForm({ onSearch, floorOptions, handleAddToSlot }) {
             }
         }
     }, [selectedFloor, floorOptions]);
+    
+
+    console.log("Selected floor at slot assignment:", selectedFloor);
 
     const handleSearch = () => {
         if (plateNumber) {
@@ -453,7 +541,9 @@ function AddVehicleForm({ onSearch, floorOptions, handleAddToSlot }) {
 
     const handleFloorChange = (e) => {
         setSelectedFloor(e.target.value);
+        console.log("Selected floor updated to:", e.target.value); // This will log the selected floor to the console
     };
+    
 
     const handleSlotSelection = (e) => {
         setSelectedSlot(e.target.value);
@@ -469,7 +559,7 @@ function AddVehicleForm({ onSearch, floorOptions, handleAddToSlot }) {
             alert("Please select a valid slot.");
             return;
         }
-        handleAddToSlot(plateNumber, slotIndex);
+        handleAddToSlot(plateNumber, slotIndex, currentSetIndex);
     };
 
     return (
