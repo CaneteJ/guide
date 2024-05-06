@@ -6,6 +6,11 @@ import { useNavigate } from 'react-router-dom';
 import { Alert } from 'react-bootstrap';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../config/firebase';
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from 'react-places-autocomplete';
+import { useGeolocated } from 'react-geolocated';
 
 function Create() {
   const [managementName, setManagementName] = useState('');
@@ -20,8 +25,28 @@ function Create() {
   const [floorDetails, setFloorDetails] = useState([]);
   const [totalSlot, setTotalSlot] = useState('');
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [coordinates, setCoordinates] = useState({ lat: null, lng: null });
+  const [geolocationAvailable, setGeolocationAvailable] = useState(true);
   const navigate = useNavigate();
 
+  const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
+    positionOptions: { enableHighAccuracy: false },
+    userDecisionTimeout: 5000,
+  });
+
+  useEffect(() => {
+    setGeolocationAvailable(isGeolocationAvailable);
+    if (coords) {
+      setCoordinates({ lat: coords.latitude, lng: coords.longitude });
+    }
+  }, [coords, isGeolocationAvailable]);
+
+  useEffect(() => {
+    setGeolocationAvailable(isGeolocationAvailable);
+    if (coords) {
+      setCoordinates({ lat: coords.latitude, lng: coords.longitude });
+    }
+  }, [coords, isGeolocationAvailable]);
 
   const handleNumberOfFloorsChange = (e) => {
     const value = e.target.value;
@@ -53,6 +78,17 @@ function Create() {
 
   const handleFileChange = (event) => {
     setSelectedFiles([...event.target.files]);
+  };
+
+  const handleAddressSelect = async (address) => {
+    try {
+      const results = await geocodeByAddress(address);
+      const latLng = await getLatLng(results[0]);
+      setCoordinates(latLng);
+      setAddress(address); // Update selected address in the state
+    } catch (error) {
+      console.error("Error fetching address coordinates:", error);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -114,6 +150,10 @@ function Create() {
         totalSlots, 
         isApproved: false,
         fileURLs, 
+        coordinates: {
+          lat: coordinates.lat,
+          lng: coordinates.lng,
+        },
       };
   
       
@@ -239,15 +279,25 @@ function Create() {
             />
           </div>
           <div style={inputGroupStyle}>
-            <input
-              type="text"
-              placeholder="Address"
-              value={companyAddress}
-              onChange={(e) => setAddress(e.target.value)}
-              required
-              style={inputStyle}
-            />
-          </div>
+          <PlacesAutocomplete value={companyAddress} onChange={setAddress} onSelect={handleAddressSelect}>
+            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+              <div>
+                <input {...getInputProps({ placeholder: 'Search Address ...' })} required />
+                {loading && <div>Loading...</div>}
+                {suggestions.map((suggestion) => (
+                  <div
+                    {...getSuggestionItemProps(suggestion, {
+                      style: { backgroundColor: suggestion.active ? '#fafafa' : '#ffffff', cursor: 'pointer' },
+                    })}
+                  >
+                    <span>{suggestion.description}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </PlacesAutocomplete>
+</div>
+
           <div style={inputGroupStyle}>
             <input
               type="email"
