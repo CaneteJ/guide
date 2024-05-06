@@ -19,6 +19,7 @@ import FetchAgents from "./admin/FetchAgents";
 import EmailDetailPage from "./admin/EmailDetailPage";
 import Reservation from "./Operator/Reservation";
 import DashboardOp from "./Operator/DashboardOp";
+import AddVehicleForm from "./Operator/AddVehicleForm"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
           <Route path="email/:email" element={<EmailDetailPage />} />
           <Route path="Reservation" element={<Reservation/>} />
           <Route path="DashboardOp" element={<DashboardOp/>} />
+          <Route path="AddVehicleForm" element={<AddVehicleForm/>} />
         </Routes>
       </Router>
       </UserProvider>

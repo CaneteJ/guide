@@ -301,3 +301,26 @@
   .button-close:hover {
       opacity: 0.8;
   }
+
+  .slots-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    gap: 10px;
+}
+
+.slot {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+    cursor: pointer;
+}
+
+.slot.occupied {
+    background-color: red;
+    color: white;
+}
+
+.slot.available {
+    background-color: green;
+    color: white;
+}

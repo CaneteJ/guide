@@ -151,50 +151,6 @@ function DashboardOp() {
     useEffect(() => {
         fetchFloors();
     }, [user]);
-
-  
-    const fetchFloorSlots = async (floorName) => {
-        if (user && user.managementName) {
-            const slotsRef = collection(db, 'spaces', user.managementName, 'floors', floorName, 'slots');
-            const slotsSnapshot = await getDocs(slotsRef);
-    
-            // Retrieve the floor's total number of slots
-            const floorOption = floorOptions.find(floor => floor.floorName === floorName);
-            const totalSlots = floorOption ? parseInt(floorOption.parkingLots, 10) : slotsSnapshot.size;
-    
-            // Initialize all slots assuming they are unoccupied
-            const allSlots = new Array(totalSlots).fill(null).map((_, index) => ({
-                id: `Slot ${index + 1}`,
-                occupied: false,
-                userDetails: {}
-            }));
-    
-            // Update the slot data from Firebase documents
-            slotsSnapshot.docs.forEach((slotDoc) => {
-                const slotData = slotDoc.data();
-                const slotNumber = parseInt(slotDoc.id.split(' ')[1], 10);
-    
-                // Ensure valid slot number indexing
-                if (slotNumber >= 1 && slotNumber <= totalSlots) {
-                    const slotIndex = slotNumber - 1;
-    
-                    // Update the corresponding slot with its data from Firebase
-                    allSlots[slotIndex] = {
-                        id: `Slot ${slotNumber}`,
-                        occupied: slotData.occupied || false,
-                        userDetails: slotData.userDetails || {}
-                    };
-                }
-            });
-    
-            // Log for debugging purposes
-            console.log(`Occupied Slots for Floor "${floorName.trim () === ""}":`, allSlots);
-           
-            // Update the state to reflect the correctly fetched slots
-            setSelectedFloorSlots(allSlots);
-        }
-    };
-    
     
     
     useEffect(() => {
@@ -247,13 +203,13 @@ function DashboardOp() {
             return;
         }
     
-        const floorTitle = floor.floorName || "General Parking"; 
+        const floorTitle = floor.floorName || "General Parking"; // Fallback to 'General Parking' if undefined
         console.log("Saving slot for floor:", floorTitle);
     
         const slotId = slotIndex + 1;  // Normalize the slotId
         const timeIn = new Date().toISOString();
         const timestamp = new Date();
-        const uniqueSlotId = `${floorTitle} ${slotId}`; 
+        const uniqueSlotId = `${floorTitle} ${slotId}`; // Unique ID based on timestamp
     
         const updatedSlot = {
             occupied: true,
@@ -300,7 +256,6 @@ function DashboardOp() {
     const handleFloorChange = (e) => {
         const floorName = e.target.value;
         setSelectedFloor(floorName);
-        fetchFloorSlots(floorName);
         
         // Find the slots for the selected floor
         const selectedFloor = floorOptions.find(floor => floor.floorName === floorName);
@@ -323,13 +278,9 @@ function DashboardOp() {
         return (
             <div className="slots-container">
                 {selectedFloorSlots.map((slot, index) => {
-                    // Extract slot data and apply occupied status correctly
+                    // Ensure we retrieve the correct slot number or car plate number
                     const isOccupied = slot.occupied;
-                    const slotNumber = index + 1; // Ensure consistent numbering with the backend
-    
-                    // Assign the appropriate background color and slot label
-                    const slotLabel = isOccupied ? (slot.userDetails?.carPlateNumber || `Slot ${slotNumber}`) : `Slot ${slotNumber}`;
-                    const backgroundColor = isOccupied ? 'red' : 'green';
+                    const slotNumber = index + 1;
     
                     return (
                         <div
@@ -338,7 +289,7 @@ function DashboardOp() {
                             style={{
                                 width: '90px',
                                 height: '80px',
-                                backgroundColor,
+                                backgroundColor: isOccupied ? 'red' : 'green',
                                 color: 'white',
                                 display: 'flex',
                                 justifyContent: 'center',
@@ -347,7 +298,8 @@ function DashboardOp() {
                                 margin: '10px',
                             }}
                         >
-                            {slotLabel}
+                            {/* If occupied, show car plate number or slot number as fallback */}
+                            {isOccupied ? (slot.userDetails && slot.userDetails.carPlateNumber ? slot.userDetails.carPlateNumber : `Slot ${slotNumber}`) : `Slot ${slotNumber}`}
                         </div>
                     );
                 })}
@@ -355,6 +307,8 @@ function DashboardOp() {
         );
     };
     
+    
+
     
     const searchInFirebase = async (searchInput) => {
         try {
