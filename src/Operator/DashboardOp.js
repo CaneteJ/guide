@@ -187,6 +187,8 @@ function DashboardOp() {
                 }
             });
     
+            console.log('Fetching slots for floor:', floorName);
+            console.log('Available Floor Options:', floorOptions);
             // Log for debugging purposes
             console.log(`Occupied Slots for Floor "${floorName.trim () === ""}":`, allSlots);
            
@@ -231,8 +233,8 @@ function DashboardOp() {
             }
         }
     
-        if (!slotSets.length) {
-            setErrorMessage("No slot sets available.");
+        if (!slotSets.length || currentSetIndex < 0 || currentSetIndex >= slotSets.length) {
+            console.error("Invalid slot set selected.");
             return;
         }
     
@@ -242,8 +244,8 @@ function DashboardOp() {
         }
     
         const floor = slotSets[currentSetIndex];
-        if (!floor || !floor.slots || slotIndex < 0 || slotIndex >= floor.slots.length || isNaN(slotIndex)) {
-            setErrorMessage(`Slot index ${slotIndex} is out of bounds or invalid.`);
+        if (!floor || slotIndex < 0 || slotIndex >= floor.slots.length) {
+            console.error(`Slot index ${slotIndex} is out of bounds.`);
             return;
         }
     
@@ -257,28 +259,25 @@ function DashboardOp() {
     
         const updatedSlot = {
             occupied: true,
-            timestamp: timeIn,
+            timestamp: new Date().toISOString(),
             userDetails: {
-                ...userDetails,
-                email: userDetails?.email || "",
-                contactNumber: userDetails?.contactNumber || "",
-                carPlateNumber: carPlateNumber,
-                slotId: slotIndex + 1,
                 agent: `${user.firstName || ''} ${user.lastName || ''}`,
-                floorTitle,
+                carPlateNumber,
+                contactNumber: userDetails.contactNumber || '',
+                email: userDetails.email || '',
+                floorTitle, 
+                slotId,
                 timeIn
             }
         };
+
         const updatedSlots = [...floor.slots];
-        updatedSlots[slotIndex] = { ...updatedSlots[slotIndex], occupied: true, carPlateNumber };
+        updatedSlots[slotIndex] = { ...updatedSlots[slotIndex], ...updatedSlot, occupied: true, carPlateNumber};
     
         const updatedFloor = { ...floor, slots: updatedSlots };
         const updatedSlotSets = [...slotSets];
         updatedSlotSets[currentSetIndex] = updatedFloor;
         setSlotSets(updatedSlotSets);
-        floor.slots[slotIndex] = updatedSlot;
-        setSlotSets([...slotSets]);
-    
         try {
             const slotDocRef = doc(db, 'spaces', user.managementName, 'floors', floorTitle , 'slots' , uniqueSlotId);
             await setDoc(slotDocRef, updatedSlot, { merge: true });
