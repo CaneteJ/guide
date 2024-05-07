@@ -186,7 +186,7 @@ function OperatorDashboard() {
         <div className="col-md-3">
           <Card>
             <Card.Body>
-              <Card.Title style={{fontFamily:'Courier New', textAlign:'center'}}><FontAwesomeIcon icon={faFileInvoiceDollar} color="orange"/> Parking Payment</Card.Title>
+              <Card.Title style={{fontFamily:'Courier New', textAlign:'center'}}><FontAwesomeIcon icon={faFileInvoiceDollar} color="orange"/> Parking </Card.Title>
               <Card.Text style={{ textAlign: 'center', margin: '0 auto', fontFamily:'Copperplate', fontSize:'20px' }}>{parkingPay}</Card.Text>
             </Card.Body>
           </Card>
@@ -212,7 +212,7 @@ function OperatorDashboard() {
           <td>{log.carPlateNumber}</td>
           <td>{new Date(log.timeIn.seconds * 1000).toLocaleString()}</td>
           <td>{new Date(log.timeIn.seconds * 1000).toLocaleString()}</td>
-          <td style={{ color: log.paymentStatus === 'Paid' ? '#FFD700' : 'inherit' }}>{log.paymentStatus}</td>
+          <td style={{ color: log.paymentStatus === 'Paid' ? '#00FF00' : 'inherit' }}>{log.paymentStatus}</td>
         </tr>
       ))}
     </tbody>
