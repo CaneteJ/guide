@@ -5,13 +5,14 @@
 }
 
   
-  .sidebar {
-    width: 250px;
-    background-color: #132B4B;
-    color: white;
-    padding: 20px;
-    border-top-right-radius: 100px;
-  }
+.sidebar {
+  width: 250px;
+  background-color: #132B4B;
+  color: white;
+  padding: 20px;
+  border-top-right-radius: 100px;
+  border-top: 3px solid white; /* Set the border top with color */
+}
 
   .sidebar p {
     padding-bottom: 10px; 

@@ -743,17 +743,18 @@ function DashboardOp() {
                                 </div>
                             ))}
                         </div>
+                        <div className="container">
                         <h1>Please select floors</h1>
-                        <select value={selectedFloor} onChange={handleFloorChange}>
-                            <option value="">Select Floor</option>
-                            {floorOptions.map((floor, index) => (
-                                <option key={index} value={floor.floorName}>{floor.floorName}</option>
-                            ))}
-                        </select>
-                        <hr className="divider" />
+                    <select value={selectedFloor} onChange={handleFloorChange} className="floor-select">
+                        <option value="">Select Floor</option>
+                        {floorOptions.map((floor, index) => (
+                            <option key={index} value={floor.floorName}>{floor.floorName}</option>
+                        ))}
+                    </select>
+                    <hr className="divider" />
                         {renderSelectedFloorSlots()}
                         {renderFormBasedOnCardType()}
-                        
+                    </div>
               </div>
             </div>       
             </div>
@@ -761,3 +762,5 @@ function DashboardOp() {
         }
         
         export default DashboardOp;
+
+    

@@ -192,34 +192,33 @@ function OperatorDashboard() {
           </Card>
         </div>  
       </div>
-      <div style={{marginTop: '30px', textAlign: 'center', justifyContent: 'center',  width: '100%', fontFamily:'Garamond'}}>
-          <Table responsive>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Vehicle</th>
-                <th>Plate No</th>
-                <th>Time In</th>
-                <th>Time Out</th>
-                <th>Payment Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {parkingLogs.map((log) => (
-                <tr key={log.id}>
-                  <td>{log.name}</td>
-                  <td>{log.car}</td>
-                  <td>{log.carPlateNumber}</td>
-                  <td>{new Date(log.timeIn.seconds * 1000).toLocaleString()}</td>
-                  <td>{new Date(log.timeIn.seconds * 1000).toLocaleString()}</td>
-                  <td style={{ color: log.paymentStatusColor }}>{log.paymentStatus}</td>
-                </tr>
-              ))}
-              
-            </tbody>
-            
-          </Table>
-          
+      <div style={{ marginTop: '30px', textAlign: 'center', justifyContent: 'center', width: '100%', fontFamily: 'Garamond', overflow: 'auto', maxHeight: '500px', border: '4px solid #003851', padding: '10px', borderRadius: '10px', boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.2)' }}>
+  <Table striped bordered hover responsive>
+    <thead style={{ backgroundColor: '#003851', color: 'white' }}>
+      <tr>
+        <th>Name</th>
+        <th>Vehicle</th>
+        <th>Plate No</th>
+        <th>Time In</th>
+        <th>Time Out</th>
+        <th>Payment Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {parkingLogs.map((log) => (
+        <tr key={log.id}>
+          <td>{log.name}</td>
+          <td>{log.car}</td>
+          <td>{log.carPlateNumber}</td>
+          <td>{new Date(log.timeIn.seconds * 1000).toLocaleString()}</td>
+          <td>{new Date(log.timeIn.seconds * 1000).toLocaleString()}</td>
+          <td style={{ color: log.paymentStatus === 'Paid' ? '#FFD700' : 'inherit' }}>{log.paymentStatus}</td>
+        </tr>
+      ))}
+    </tbody>
+  </Table>
+
+
           </div>
           </MDBCol>
           </MDBRow>

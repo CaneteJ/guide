@@ -5,6 +5,10 @@ import { db, auth } from "../config/firebase";
 import { MDBCol, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBListGroup, MDBListGroupItem } from "mdb-react-ui-kit";
 import UserContext from "../UserContext";
 import OperatorReserve from "./operatorReserve";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBell } from '@fortawesome/free-solid-svg-icons'
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 const Reservation = () => {
 
@@ -176,34 +180,128 @@ const Reservation = () => {
         });
     };
 
-    const HistoryLog = () => (
-        <div className="history-log mt-4" style={{ maxHeight: "550px", overflow: "scroll", marginLeft: "20px", backgroundColor: "white"}}>
-            {historyLog.map((logEntry, index) => (
-                <div className={`alert ${logEntry.status === "Accepted" ? "alert-success" : "alert-danger"} mt-2`} key={index}>
-                    <strong>{logEntry.status}:</strong> {logEntry.name} requested a reservation on {logEntry.slotId}. Plate Number: {logEntry.plateNumber}, Slot: {logEntry.slotId}
-                </div>
-            ))}
-        </div>
-    );
+    const [showNotification, setShowNotification] = useState(false);
 
-    const ReservationRequest = ({ request, index }) => (
-        <div className="reservation-request mb-4 border p-3 rounded bg-light" key={request.plateNumber}>
-            <h4 className="mb-0">Name: {request.userName}</h4>
-            <p className="text-muted mb-2">Time of Request: {request.timeOfRequest}</p>
-            <p>Plate Number: {request.plateNumber}</p>
-            <p>Slot Number: {request.slotId}</p>
-            <div className="d-flex flex-column align-items-center mt-2">
-                <button className="btn btn-success" onClick={() => handleReservation(true, request, index)}>
-                    Accept Reservation
-                </button>
-                <button className="btn btn-danger mt-2" onClick={() => handleReservation(false, request, index)}>
-                    Decline Reservation
-                </button>
+    const HistoryLog = ({ historyLog }) => {
+        const [showAccepted, setShowAccepted] = useState(false);
+        const [showDeclined, setShowDeclined] = useState(false);
+    
+        const handleClearHistory = () => {
+            localStorage.removeItem("historyLog");
+        };
+    
+        return (
+            <div style={{ border: "3px solid #ccc", borderRadius: "8px", padding: "10px", position: "relative", borderColor: '#7abdea' }}>
+                <h5 style={{ color: "#003851", textAlign: "left", fontSize: "1.5rem", fontWeight: "bold", marginBottom: "1.5rem" }}>Reservation History</h5>
+                <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap" }}>
+                    <button
+                        className="btn btn-primary"
+                        style={{ margin: "5px", width: "150px" }}
+                        onClick={() => setShowAccepted(!showAccepted)}
+                    >
+                        {showAccepted ? "Hide Accepted" : "Show Accepted"}
+                    </button>
+                    <button
+                        className="btn btn-primary"
+                        style={{ margin: "5px", width: "150px" }}
+                        onClick={() => setShowDeclined(!showDeclined)}
+                    >
+                        {showDeclined ? "Hide Declined" : "Show Declined"}
+                    </button>
+                    <button
+                        className="btn btn-danger"
+                        style={{ margin: "5px", width: "150px" }}
+                        onClick={handleClearHistory}
+                    >
+                        Clear History
+                    </button>
+                </div>
+                {showAccepted && (
+                    <div>
+                        <h6 className="mt-3">Accepted Reservations</h6>
+                        {historyLog.map((logEntry, index) => logEntry.status === "Accepted" && (
+                            <div className="alert alert-success mt-2" key={index}>
+                                <strong>Accepted:</strong> {logEntry.name} requested a reservation on {logEntry.slotId}. Plate Number: {logEntry.plateNumber}, Slot: {logEntry.slotId}
+                            </div>
+                        ))}
+                    </div>
+                )}
+                {showDeclined && (
+                    <div>
+                        <h6 className="mt-3">Declined Reservations</h6>
+                        {historyLog.map((logEntry, index) => logEntry.status === "Declined" && (
+                            <div className="alert alert-danger mt-2" key={index}>
+                                <strong>Declined:</strong> {logEntry.name} requested a reservation on {logEntry.slotId}. Plate Number: {logEntry.plateNumber}, Slot: {logEntry.slotId}
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
-        </div>
-    );
+        );
+    };
+    
+    const ReservationRequest = ({ request, index }) => {
+        const [showMapModal, setShowMapModal] = useState(false);
+      
+        const toggleMapModal = () => {
+          setShowMapModal(!showMapModal);
+        };
+      
+        return (
+          <div className="reservation-request mb-4 border p-3 rounded bg-light" style={{ maxWidth: '800px' }} key={request.plateNumber}>
+            {/* Headers */}
+            <div className="d-flex justify-content-between mb-2 text-muted">
+              <div className="p-2"><strong>Name</strong></div>
+              <div className="p-2"><strong>Time of Request</strong></div>
+              <div className="p-2"><strong>Plate Number</strong></div>
+              <div className="p-2"><strong>Slot Number</strong></div>
+            </div>
+      
+            {/* Details */}
+            <div className="d-flex justify-content-between mb-2">
+              <div className="p-2">{request.userName}</div>
+              <div className="p-2">{request.timeOfRequest}</div>
+              <div className="p-2">{request.plateNumber}</div>
+              <div className="p-2">{request.slotId}</div>
+            </div>
+      
+            {/* MA CLICK NGA ICON SA MAP */}
+            <Button variant="primary" onClick={toggleMapModal}>
+              <i className="bi bi-geo-alt"></i> View Map
+            </Button>
+      
+            {/* PARA SA MAP*/}
+            <Modal show={showMapModal} onHide={toggleMapModal} centered>
+              <Modal.Header closeButton>
+                <Modal.Title>Map</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <img
+                  src={`https://maps.googleapis.com/maps/api/staticmap?center=${request.latitude},${request.longitude}&zoom=14&size=600x300&maptype=roadmap&markers=color:red%7Clabel:S%7C${request.latitude},${request.longitude}&key=YOUR_API_KEY`}
+                  alt="Map"
+                  style={{ width: '100%', height: 'auto' }}
+                />
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={toggleMapModal}>Close</Button>
+              </Modal.Footer>
+            </Modal>
+      
+            {/* Buttons */}
+            <div className="d-flex flex-row align-items-center mt-2">
+              <button className="btn btn-success mr-2" onClick={() => handleReservation(true, request, index)}>
+                Accept Reservation
+              </button>
+              <button className="btn btn-danger" onClick={() => handleReservation(false, request, index)}>
+                Decline Reservation
+              </button>
+            </div>
+          </div>
+        );
+      };
 
     return (
+        
         <section
             style={{
                 backgroundSize: "cover",
@@ -213,13 +311,21 @@ const Reservation = () => {
             }}
         >
             <div>
-                <nav className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: "#003851" }}>
-                    <div className="container">
-                        <a className="navbar-brand" style={{padding: 20}}>
-                       
-                        </a>
-                    </div>
-                </nav>
+                
+            <nav className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: "#132B4B" }}>
+    <div className="container d-flex justify-content-between">
+        <a className="navbar-brand" style={{padding: 35}}>
+            {/* Your logo or brand name here */}
+        </a>
+        <div>
+            <button className="btn" onClick={() => setShowNotification(!showNotification)} style={{ color: 'white', border: 'none', background: 'none' }}>
+                <FontAwesomeIcon icon={faBell} size="lg" />
+                {/* Optionally display a badge with notification count */}
+                {showNotification && <span className="badge rounded-pill bg-danger">3</span>}
+            </button>
+        </div>
+    </div>
+</nav>
 
                 <MDBContainer className="py-4">
                     <MDBRow>
@@ -227,11 +333,12 @@ const Reservation = () => {
                             <OperatorReserve />
                         </MDBCol>
                         <MDBCol lg="4">
-                <div className="container mt-5 d-flex flex-column align-items-center justify-content-center">
-                    <h3 className="text-center mb-4" style={{ color: "black" }}>
+                <div className="container mt-5 d-flex flex-column align-items-center justify-content-center" >
+                <h3 style={{ color: "#003851", textAlign: "center", fontSize: "2rem", fontWeight: "bold", marginBottom: "1.5rem", marginLeft: '-100%' }}>
                         Parking Reservation Management
                     </h3>
-                    <div className="reservation-requests d-flex flex-column align-items-center mb-4" style={{ width: "600px", height: "60vh", overflowY: "scroll", padding: "10px", marginLeft: "20px", background: "white" }}>
+                    
+                    <div style={{ width: "90vh", height: "60vh", overflowY: "scroll", padding: "10px", background: "#132B4B", marginLeft: '-100%'}}>
                         {reservationRequests.length === 0 ? (
                             <p>No reservation</p>
                         ) : (
@@ -246,18 +353,12 @@ const Reservation = () => {
                         )}
                         
                     </div>
-                    
-                
-
                 </div>
+
                 </MDBCol>
-                
                 <MDBCol lg="4">
-                <h3 className="text-center mb-3" style={{ color: "black", marginTop: "50px" }}>
-                        Accepted/Declined Reservations
-                    </h3>
-                    <nav className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: "white" }}>
-                    <HistoryLog />
+                    <nav style={{ backgroundColor: "white", marginRight: '-50%', marginLeft: 'auto', borderWidth: 1, borderColor: "#003851", marginTop: '26%'}}>
+                    <HistoryLog historyLog={historyLog} />
                     </nav>
                     </MDBCol>
                     </MDBRow>
