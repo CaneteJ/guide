@@ -160,6 +160,8 @@ const App = () => {
 
     return (
         <section
+  
+        
             style={{
                 backgroundSize: "cover",
                 backgroundRepeat: "no-repeat",
@@ -172,6 +174,7 @@ const App = () => {
                     <Link className="navbar-brand" to="/Dashboard" style={{ fontSize: "25px" }}>
                         SpotWise
                     </Link>
+                    
                     <p style={styles.welcomeMessage}>
                         <DropdownButton alignRight variant="outline-light" title={<FaUserCircle style={styles.icon} />} id="dropdown-menu">
                             <Dropdown.Item href="Dashboard">
@@ -207,10 +210,41 @@ const App = () => {
                     </p>
                 </div>
             </nav>
+            <div className="admin-dashboard"> {/* Adjusted marginTop to account for navbar */}
+        <div className="sidebar">
+            <div className="admin-container">
+            </div>
+            <div class="wrapper">
+                <div class="side">
+                    <div>
+                                {profileImageUrl ? <MDBCardImage src={profileImageUrl} alt="Operator Profile Logo" className="rounded-circle" style={{ width: "70px"}} fluid /> : <MDBCardImage src="default_placeholder.jpg" alt="Default Profile Logo" className="rounded-circle" style={{ width: "70px", marginTop: '-6vh' }} fluid />}
+                                <p style={{ fontFamily: "Georgina", fontSize: "20px", border: "white", fontWeight: "bold", colo: 'white'}}>Administrator</p>
+                                <p style={{ fontFamily: "Georgina", color: "white", fontWeight: "bold", fontSize: 12, marginTop: -15}}>
+                                    {managementName}                 
+                                </p>
+                                </div>            
+                    <h2>Menu</h2>
+                    <ul>
+                        <li><a href="Dashboard"><i class="fas fa-home"></i>Home</a></li>
+                        <li><a href='AgentRegistration'><i class="fas fa-user"></i>Account Management</a></li>
+                        <li><a href='TicketInfo'><i class="fas fa-address-card"></i>Ticket Management</a></li>
+                        <li><a href='Tracks'><i class="fas fa-project-diagram"></i>Management Details</a></li>
+                        <li><a href="AgentSchedule"><i class="fas fa-blog"></i>Schedule Management</a></li>
+                        <li><a href="Profiles"><i class="fas fa-blog"></i>Profile</a></li>
+                        <li><a href="Feedback"><i class="fas fa-blog"></i>Feedback</a></li>
+                        <li><a href="/"><i className="fas fa-sign-out-alt" style={{ color: 'red' }}></i>Logout</a></li>
+                    </ul>
+
+                    
+                </div>
+                
+            </div>
+            </div>
+       
             <MDBContainer className="py-5">
                 <MDBRow>
                     <MDBCol lg="4">
-                        <MDBCard style={{ marginTop: "45px", color: "#fff" }}>
+                        
                             <MDBCardBody className="text-center">
                                 <p style={{ fontFamily: "Georgina", fontSize: "25px", color: "black", border: "white", fontWeight: "bold" }}>Administrator</p>
                                 {profileImageUrl ? <MDBCardImage src={profileImageUrl} alt="Operator Profile Logo" className="rounded-circle" style={{ width: "70px" }} fluid /> : <MDBCardImage src="default_placeholder.jpg" alt="Default Profile Logo" className="rounded-circle" style={{ width: "70px" }} fluid />}
@@ -223,53 +257,8 @@ const App = () => {
                             </MDBCardBody>
 
                             <MDBCard className="mb-4 mb-lg-0" style={{ marginTop: "40px", boxShadow: "none", border: "none" }}>
-                                <MDBCardBody className="p-0">
-                                    <MDBListGroup
-                                        flush
-                                        className="rounded-3"
-                                        style={{
-                                            border: "none",
-                                            borderRadius: "none",
-                                            boxShadow: "none",
-                                        }}
-                                    >
-                                        <MDBListGroupItem style={{ ...listItemStyle, ...customListItemStyle }} hover className="d-flex justify-content-between align-items-center p-3" onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = listItemHoverStyle.backgroundColor)} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "inherit")}>
-                                            <MDBCardText onClick={() => handleAgentSchedule()} style={{ fontFamily: "Georgina", fontSize: "18px", color: "black" }}>
-                                                <img src="calendar.webp" alt="Calendar" style={{ width: "25px", marginRight: "30px" }} />
-                                                Agent Schedule
-                                            </MDBCardText>
-                                        </MDBListGroupItem>
-                                        <MDBListGroupItem style={{ ...listItemStyle, ...customListItemStyle }} hover className="d-flex justify-content-between align-items-center p-3" onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = listItemHoverStyle.backgroundColor)} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "inherit")}>
-                                            <MDBCardText onClick={() => handleRegister()} style={{ fontFamily: "Georgina", fontSize: "18px", color: "black" }}>
-                                                <img src="registerA.jpg" alt="User" style={{ width: "25px", marginRight: "30px" }} />
-                                                Register Ticket Operator
-                                            </MDBCardText>
-                                        </MDBListGroupItem>
-
-                                        <MDBListGroupItem style={{ ...listItemStyle, ...customListItemStyle }} hover className="d-flex justify-content-between align-items-center p-3" onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = listItemHoverStyle.backgroundColor)} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "inherit")}>
-                                            <MDBCardText onClick={() => handleViewProfile()} style={{ fontFamily: "Georgina", fontSize: "18px", color: "black" }}>
-                                                <img src="pofile.jpg" alt="Profile" style={{ width: "25px", marginRight: "30px" }} />
-                                                View Profile
-                                            </MDBCardText>
-                                        </MDBListGroupItem>
-                                        <MDBListGroupItem style={{ ...listItemStyle, ...customListItemStyle }} hover className="d-flex justify-content-between align-items-center p-3" onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = listItemHoverStyle.backgroundColor)} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "inherit")}>
-                                            <MDBCardText onClick={() => handleRevenues()} style={{ fontFamily: "Georgina", fontSize: "18px", color: "black" }}>
-                                                <img src="management.jpg" alt="Management" style={{ width: "25px", marginRight: "30px" }} />
-                                                Management Details
-                                            </MDBCardText>
-                                        </MDBListGroupItem>
-                                        <MDBListGroupItem style={{ ...listItemStyle, ...customListItemStyle }} hover className="d-flex justify-content-between align-items-center p-3" onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = listItemHoverStyle.backgroundColor)} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "inherit")}>
-                                            <MDBCardText onClick={() => handleFeed()} style={{ fontFamily: "Georgina", fontSize: "18px", color: "black" }}>
-                                                <img src="feedback.jpg" alt="Feedback" style={{ width: "25px", marginRight: "30px" }} />
-                                                Feedback
-                                            </MDBCardText>
-                                        </MDBListGroupItem>
-                                        <Button onClick={handlelogin} style={{ fontFamily: "Georgina", width: "80px", backgroundColor: "rgba(4, 55,55, 0.7)", marginLeft: "80px", marginTop: "75px", border: "none" }}>
-                                            Logout
-                                        </Button>
-                                    </MDBListGroup>
-                                </MDBCardBody>
-                            </MDBCard>
+                                
+                         
                         </MDBCard>
                     </MDBCol>
                     <MDBCol lg="8">
@@ -435,6 +424,7 @@ const App = () => {
                     </MDBCol>
                 </MDBRow>
             </MDBContainer>
+            </div>
         </section>
     );
 };
